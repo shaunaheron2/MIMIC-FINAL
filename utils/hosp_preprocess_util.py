@@ -324,7 +324,7 @@ def preproc_labs(dataset_path: str, version_path:str, cohort_path:str, time_col:
         if df_cohort.empty:
             df_cohort=chunk
         else:
-            df_cohort=df_cohort.append(chunk, ignore_index=True)
+            df_cohort=pd.concat([df_cohort, chunk], ignore_index=True)
     
     #labs = pd.read_csv(dataset_path, compression='gzip', usecols=usecols, dtype=dtypes, parse_dates=[time_col]).drop_duplicates()
     
