@@ -23,6 +23,7 @@ Research Objectives:
 
 Our project had two complementary aims: First, to validate ehrapy’s effectiveness and generalizability we replicated key analyses from the original paper that had used ehrapy to stratify pediatric patients (PIC database) affected by unspecified pneumonia into finer-grained phenotypes. We validated this work by implementing the same methodology but in an adult cohort and using the MIMIC-IV dataset [3]. Second, we extended the framework by implementing a machine learning approach to predict in-hospital mortality for each of our clustered groups.  Our dual approach was used to both validate the original methodological framework and python tools and demonstrate its potential for supporting more sophisticated analytical techniques.
 
+# Background & Related Work
 ## Importance of EHR Phenotyping
 Explain the importance of EHR phenotyping and the challenges associated with large-scale EHR data (e.g., heterogeneity, lack of standardized approaches).
 ## 
