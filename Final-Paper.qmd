@@ -1,9 +1,96 @@
 ---
 title: "Final MIMIC-IV Paper"
 format: html
+bibliography: references.bib
 ---
 
-https://github.com/cmsalgado/book_chapter/blob/master/book_chapter.ipynb
+https://github.com/cmsalgado/book_chapter/blob/master/book_chapter.ipynb <- time series clustering on mimic
+
+13% hospital mortality rate.
+# Introduction
+Goal: Provide background, define the problem, and state your research objectives.
+Problem Statement:  Describe why traditional methods fall short and why a framework like ehrapy is valuable.
+
+The increasing digitization of healthcare systems has led to vast collections of electronic health records (EHRs), presenting both opportunities and challenges for medical research [1]. While these datasets contain valuable insights for improving patient care, their heterogeneous nature
+and lack of standardized analysis approaches have limited their utility [2]. Two recent developments offer promising directions for addressing these challenges: the ehrapy framework, an opensource Python package designed specifically for exploratory analysis of EHR data [2], and advances in machine learning approaches for EHR phenotyping [1]. EHR phenotyping is the process of using electronic health records (EHRs) to identify patients
+with a specific characteristic or condition. This process is important for research purposes, such as identifying patients for clinical trials.
+
+ehrapy incorporates a series of analytical steps, from data extraction and quality control to the gneration of low-dimension feature representations. Complemented by rich statistical modules, ehrapy facilitates associating patients with disease states, differential comparison between patient clusters, survival analysis, trajectory inference, causal inference and more. Leveraging ontologies, ehrapy further enables data sharing and training EHR deep learning models, paving the way for foundational models in biomedical research. 
+
+Research Objectives:
+- Replication: Validating ehrapy’s ability to stratify pneumonia patients (adapting the original pediatric analysis to adults in MIMIC-IV).
+- Extension: Implementing machine learning (e.g., RNNs) to enhance phenotyping.
+
+Our project had two complementary aims: First, to validate ehrapy’s effectiveness and generalizability we replicated key analyses from the original paper that had used ehrapy to stratify pediatric patients (PIC database) affected by unspecified pneumonia into finer-grained phenotypes. We validated this work by implementing the same methodology but in an adult cohort and using the MIMIC-IV dataset [3]. Second, we extended the framework by implementing a machine learning approach to predict in-hospital mortality for each of our clustered groups.  Our dual approach was used to both validate the original methodological framework and python tools and demonstrate its potential for supporting more sophisticated analytical techniques.
+
+## Importance of EHR Phenotyping
+Explain the importance of EHR phenotyping and the challenges associated with large-scale EHR data (e.g., heterogeneity, lack of standardized approaches).
+## 
+# Lit Review
+
+Electronic health records (EHRs) have become integral to modern healthcare due to standardized data collection and digitalization. While they provide a comprehensive record of patient history, their high-dimensional, heterogeneous structure—spanning structured clinical codes, unstructured notes, and temporal data—poses signficant challenges for analysis. Data mining techniques, including preprocessing, dimensionality reduction, and predictive modeling, are essential to extract meaningful insights. These methods have enabled disease prediction and classification, population health analysis, treatment optimization, clinical trial simulation, and patient stratification, demonstrating the transformative potential of quantitative approaches in healthcare.
+
+## MIMIC-IV dataset
+
+The MIMIC-IV database provides an ideal test ground for this work, containing comprehensive clinical data from ICU and non-ICU patients at Beth Israel Deaconess Medical Center [3]. Its structured format and rich clinical information enable direct comparison with analyses performed on the original Pediatric Intensive Care (PIC) database [4], while its scope and complexity make it suitable for testing advanced machine learning implementations
+
+1. Introduction (1-1.5 pages)
+
+
+Key Sections:
+
+Context: Explain the importance of EHR phenotyping and the challenges associated with large-scale EHR data (e.g., heterogeneity, lack of standardized approaches).
+Problem Statement: Describe why traditional methods fall short and why a framework like ehrapy is valuable.
+Research Objectives: Restate the two main goals from your proposal:
+Replication: Validating ehrapy’s ability to stratify pneumonia patients (adapting the original pediatric analysis to adults in MIMIC-IV).
+Extension: Implementing machine learning (e.g., RNNs) to enhance phenotyping.
+🔥 Tip: You can reference your proposal’s introduction but refine it based on what you actually did.
+
+2. Background & Related Work (1.5-2 pages)
+Goal: Position your work within the existing literature and highlight the significance of your approach.
+
+Key Sections:
+
+EHR Phenotyping: Briefly introduce EHR phenotyping (why it’s important, common methods, and challenges).
+Machine Learning in EHR Analysis: Summarize previous studies using ML in phenotyping, clustering, and classification.
+ehrapy Framework: Provide an overview of ehrapy, its core functionalities, and how it streamlines EHR analysis.
+Prior Work on Pneumonia Phenotyping: Summarize key findings from the original PIC study to provide context.
+🔥 Tip: Cite sources from your proposal and add any new relevant references you found.
+
+3. Methods (2-3 pages)
+Goal: Clearly describe your methodology so that others can replicate your study.
+
+Key Sections:
+
+3.1 Data Source
+Describe MIMIC-IV, including:
+Number of patients
+Data collected (e.g., vitals, medications, labs)
+Inclusion/exclusion criteria
+3.2 Framework Validation (Phase 1)
+Data Processing: Explain how you cleaned and preprocessed the data for pneumonia stratification.
+Clustering Approach: Describe the methods used (e.g., k-means, hierarchical clustering).
+Evaluation Metrics: How did you assess ehrapy’s stratification performance?
+3.3 Machine Learning Extension (Phase 2)
+Model Selection: Justify the use of RNNs for EHR phenotyping.
+Feature Engineering: Describe how you converted time-series EHR data into model-ready inputs.
+Training & Validation: How did you train/test the model? What hyperparameters were used?
+Performance Metrics: Describe how you evaluated the ML model (e.g., AUC, F1-score, silhouette scores for clustering).
+4. Results (3-4 pages)
+Goal: Present key findings objectively, using figures and tables.
+
+Key Sections:
+
+4.1 Validation Results (Phase 1)
+Stratified pneumonia subgroups: Describe the clusters formed and compare them to the original pediatric study.
+Statistical differences: Highlight major differences/similarities across age groups.
+4.2 ML Phenotyping Results (Phase 2)
+Performance Metrics: Report accuracy, AUC, or other key metrics of the RNN model.
+Comparison with Clustering Approach: How well did ML-based phenotyping align with ehrapy’s unsupervised stratification?
+Visualization: Include figures (e.g., t-SNE plots, confusion matrices).
+🔥 Tip: Tables & graphs > large text blocks. Summarize key results concisely.
+
+
 
 
 ```{python}

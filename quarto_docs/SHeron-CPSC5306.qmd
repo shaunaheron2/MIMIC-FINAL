@@ -1,0 +1,81 @@
+---
+title: "Extending an open source Python framework for electronic health record pipelines with machine learning"
+subtitle: "Extending ehrapy to Machine Learning"
+author: Shauna Heron - Solo
+institute: CPSC5306 - Laurentian University - Dr. K. Passi
+format:
+    html: default
+    pdf: default
+    typst: default
+bibliography: references.bib
+---
+
+# Introduction
+
+The increasing digitization of healthcare systems has led to vast collections of electronic health records (EHRs), presenting both opportunities and challenges for medical research [@yang2023]. While these datasets contain valuable insights for improving patient care, their heterogeneous nature and lack of standardized analysis approaches have limited their utility [@heumos2024]. Two recent developments offer promising directions for addressing these challenges: the ehrapy framework, an open-source Python package designed specifically for exploratory analysis of EHR data [@heumos2024], and advances in machine learning approaches for EHR phenotyping [@yang2023].
+
+EHR phenotyping is the process of using electronic health records (EHRs) to identify patients with a specific characteristic or condition. This process is important for research purposes, such as identifying patients for clinical trials.
+
+This project has two complementary aims. First, we will validate ehrapy's effectiveness and generalizability by replicating key analyses from the original paper using the MIMIC-IV clinical database [@johnson]. Second, we will extend the framework by implementing one of the machine learning approaches identified in a recent comprehensive review as particularly effective for EHR phenotyping [@yang2023]. This dual approach will both validate a new methodological framework and demonstrate its potential for supporting more sophisticated analytical techniques.
+
+The MIMIC-IV database provides an ideal test ground for this work, containing comprehensive clinical data from ICU and non-ICU patients at Beth Israel Deaconess Medical Center [@johnson]. Its structured format and rich clinical information enable direct comparison with analyses performed on the original Pediatric Intensive Care (PIC) database [@li], while its scope and complexity make it suitable for testing advanced machine learning implementations.
+
+# Methods
+
+## Data Source
+
+This study will utilize the MIMIC-IV database, which contains de-identified health data associated with approximately 50,000 hospital admissions for adult patients between 2008-2019 [@johnson]. The database includes detailed information about patient demographics, vital signs, laboratory measurements, medications, diagnoses, and procedures. We have obtained credentialed access to MIMIC-IV through PhysioNet and will conduct all analyses in compliance with the database usage agreement [@johnson].
+
+## Proposed Analyses
+
+We will conduct this study in two phases, first validating ehrapy's core functionality through replication and then extending it to support machine learning-based phenotyping [@heumos2024]:
+
+### Phase 1: Framework Validation through Patient Stratification
+
+Following the methodology outlined in the original ehrapy paper, we will identify and stratify patients diagnosed with pneumonia into distinct phenotypic groups [@johnson]. This initial phase will:
+
+-   Use ehrapy's clustering capabilities to analyze laboratory values, vital signs, and medication patterns [@heumos2024]
+-   Identify clinically meaningful subgroups in adult pneumonia cases
+-   Compare findings with the original pediatric patient analysis to evaluate pattern consistency across age groups
+-   Validate ehrapy's basic functionality for cohort identification and characterization
+
+### Phase 2: Machine Learning Extension
+
+Building on the patient stratification analysis, we will implement a supervised deep learning approach as described by @yang2023. Specifically, we will:
+
+-   Develop a recurrent neural network (RNN) architecture to analyze temporal patterns in patient data
+-   Use the subgroups identified in Phase 1 as training labels for the supervised learning approach
+-   Compare the ML-based phenotype classifications with the clustering-based approach
+-   Evaluate the potential advantages of automated feature learning over traditional clustering methods
+
+## Technical Implementation
+
+The implementation will follow ehrapy's established pipeline while incorporating additional components for machine learning [@adamson2023]:
+
+Base Framework Implementation:
+
+-   Data extraction and formatting using ehrapy's data loading capabilities
+-   Quality control and missing data handling
+-   Feature normalization and encoding
+-   Dimensionality reduction and visualization
+
+Machine Learning Extensions:
+
+-   Temporal feature extraction for RNN input
+-   Model architecture implementation using PyTorch [@paszke]
+-   Training and validation pipeline development
+-   Integration with ehrapy's preprocessing workflow
+
+Throughout both phases, we will document all adaptations required to accommodate both the MIMIC-IV data structure and the machine learning components [@adamson2023].
+
+# Expected Outcomes and Impact
+
+This project will attempt to validate ehrapy's [@heumos2024] effectiveness and generalizability using the MIMIC-IV database [@johnson], while extending its capabilities by implementing a supervised deep learning approach for phenotyping [@yang2023]. We expect to:
+
+-   Demonstrate ehrapy's applicability across different EHR systems and adult patient populations
+
+-   Investigate ehrapy's potential to support advanced machine learning techniques for improved phenotype classification
+
+-   Contribute to the standardization of EHR analysis by documenting the replication process and sharing findings
+
+By integrating cutting-edge machine learning techniques, we aim to further research and development in EHR analysis. The insights gained from comparing traditional clustering with deep learning approaches may inform future methodological choices.
