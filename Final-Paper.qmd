@@ -4,24 +4,31 @@ format: html
 bibliography: references.bib
 ---
 
-https://github.com/cmsalgado/book_chapter/blob/master/book_chapter.ipynb <- time series clustering on mimic
+https://github.com/cmsalgado/book_chapter/blob/master/book_chapter.ipynb \<- time series clustering on mimic
 
 13% hospital mortality rate.
+
 # Introduction
+
 Goal: Provide background, define the problem, and state your research objectives.
-Problem Statement:  Describe why traditional methods fall short and why a framework like ehrapy is valuable.
 
-The increasing digitization of healthcare systems has led to vast collections of electronic health records (EHRs), presenting both opportunities and challenges for medical research [1]. While these datasets contain valuable insights for improving patient care, their heterogeneous nature
-and lack of standardized analysis approaches have limited their utility [2]. Two recent developments offer promising directions for addressing these challenges: the ehrapy framework, an opensource Python package designed specifically for exploratory analysis of EHR data [2], and advances in machine learning approaches for EHR phenotyping [1]. EHR phenotyping is the process of using electronic health records (EHRs) to identify patients
-with a specific characteristic or condition. This process is important for research purposes, such as identifying patients for clinical trials.
+Problem Statement: Describe why traditional methods fall short and why a framework like ehrapy is valuable.
 
-ehrapy incorporates a series of analytical steps, from data extraction and quality control to the gneration of low-dimension feature representations. Complemented by rich statistical modules, ehrapy facilitates associating patients with disease states, differential comparison between patient clusters, survival analysis, trajectory inference, causal inference and more. Leveraging ontologies, ehrapy further enables data sharing and training EHR deep learning models, paving the way for foundational models in biomedical research. 
+The increasing digitization of healthcare systems has led to vast collections of electronic health records (EHRs), presenting both opportunities and challenges for medical research \[1\]. While these datasets contain valuable insights for improving patient care, their heterogeneous nature and lack of standardized analysis approaches have limited their utility \[2\]. Two recent developments offer promising directions for addressing these challenges: the ehrapy framework, an opensource Python package designed specifically for exploratory analysis of EHR data \[2\], and advances in machine learning approaches for EHR phenotyping \[1\]. EHR phenotyping is the process of using electronic health records (EHRs) to identify patients with a specific characteristic or condition. This process is important for research purposes, such as identifying patients for clinical trials.
 
-Research Objectives:
-- Replication: Validating ehrapy’s ability to stratify pneumonia patients (adapting the original pediatric analysis to adults in MIMIC-IV).
-- Extension: Implementing machine learning (e.g., RNNs) to enhance phenotyping.
+ehrapy incorporates a series of analytical steps, from data extraction and quality control to the gneration of low-dimension feature representations. Complemented by statistical modules, ehrapy facilitates associating patients with disease states, differential comparison between patient clusters, survival analysis, trajectory inference, causal inference and more. Leveraging ontologies, ehrapy further enables data sharing and training EHR deep learning models, paving the way for foundational models in biomedical research.
 
-Our project had two complementary aims: First, to validate ehrapy’s effectiveness and generalizability we replicated key analyses from the original paper that had used ehrapy to stratify pediatric patients (PIC database) affected by unspecified pneumonia into finer-grained phenotypes. We validated this work by implementing the same methodology but in an adult cohort and using the MIMIC-IV dataset [3]. Second, we extended the framework by implementing a machine learning approach to predict in-hospital mortality for each of our clustered groups.  Our dual approach was used to both validate the original methodological framework and python tools and demonstrate its potential for supporting more sophisticated analytical techniques.
+The MIMIC-IV clinical database provides an ideal test ground for this work, containing comprehensive clinical data from ICU and non-ICU patients at Beth Israel Deaconess Medical Center [@johnson2023]. Its structured format and rich clinical information enable direct comparison with analyses performed on the original Pediatric Intensive Care (PIC) database [@li], while its scope and complexity make it suitable for testing advanced machine learning implementations.
+
+**Research Objectives:**
+
+-   **Replication:** Validating ehrapy’s ability to stratify pneumonia patients (adapting the original pediatric analysis to adults in MIMIC-IV).
+
+To deepen clinical phenotyping for the disease group ‘unspecified pneumonia’, we calculated a k-nearest neighbor graph to cluster patients into groups and visualize these in UMAP space (Methods). Leiden clustering62 identified four patient groupings with distinct clinical features that we annotated (Fig. 2e). As in the original paper, we will implement the Leiden clustering algorithm to identify subclasses of pneumonia patients in an adult cohort. The Leiden clustering algorithm is a graph-based community detection method used primarily for identifying clusters in complex networks. It’s an improvement upon the popular Louvain algorithm, designed specifically to overcome some of Louvain's limitations, such as poorly connected or fragmented clusters. - **Extension:** Implementing machine learning (e.g., RNNs) to enhance phenotyping.
+
+**Our project had two complementary aims:**
+
+First, to validate ehrapy’s effectiveness and generalizability we replicated key analyses from the original paper that had used ehrapy to stratify pediatric patients (PIC database) affected by unspecified pneumonia into finer-grained phenotypes. We validated this work by implementing the same methodology but in an adult cohort and using the MIMIC-IV dataset \[3\]. Second, we extended the framework by implementing a machine learning approach to predict in-hospital mortality for each of our clustered groups. Our dual approach was used to both validate the original methodological framework and python tools and demonstrate its potential for supporting more sophisticated analytical techniques.
 
 # Background & Related Work
 
@@ -31,49 +38,89 @@ Our project had two complementary aims: First, to validate ehrapy’s effectiven
 
 ### ehrapy Framework: Provide an overview of ehrapy, its core functionalities, and how it streamlines EHR analysis.
 
-### Prior Work on Pneumonia Phenotyping: Summarize key findings from the original PIC study to provide context.
+For standardized analysis of electronic health record (EHR) data, it is critical that the data are encoded and stored in consistent and resuable formats. For this reason, ehrapy requires that input data are organized in structured vectors. Data loaded into AnnData objects can then be mapped against several hierarchical ontologies (Methods). Clinical keywords of free text notes can automatically be extracted.
+
+Ehrapy is a scalable data storage backend that includes several preprocessing and analysis modules. In ehrapy, data are organized as a data matrix where individual observations (tuples) are individual patient visits, and features () represent all measured quantities. These data matrices are stored together with metadata of observations and features. By leveraging the AnnData annotation structure, ehrapy builds upon established standards and is compatible with analysis and visualization functions provided by the omics scverse [@virshup2023].
+
+Powered by scanpy, which scales to millions of observations52 (Methods and Supplementary Table 1) and the machine learning library scikit-learn53, ehrapy provides more than 100 composable analysis functions organized in modules from which custom analysis pipelines can be built. Each function directly interacts with the AnnData object and adds all intermediate results for simple access and reuse of information to it. To facilitate setting up these pipelines, ehrapy guides analysts through a general analysis pipeline (Fig. 1). At any step of an analysis pipeline, community software packages can be integrated without any vendor lock-in. Because ehrapy is built on open standards, it can be purposefully extended to solve new challenges, such as the development of foundational models (Methods).
+
+In the ehrapy analysis pipeline, EHR data are initially inspected for quality issues by analyzing feature distributions that may skew results and by detecting visits and features with high missing rates that ehrapy can then impute (Methods). ehrapy tracks all filtering steps while keeping track of population dynamics to highlight potential selection and filtering biases (Methods). Subsequently, ehrapy’s normalization and encoding functions (Methods) are applied to achieve a uniform numerical representation that facilitates data integration and corrects for dataset shift effects (Methods). Calculated lower-dimensional representations can subsequently be visualized, clustered and annotated to obtain a patient landscape (Methods). Such annotated groups of patients can be used for statistical comparisons to find differences in features among them to ultimately learn markers of patient states. As analysis goals can differ between users and datasets, the ehrapy analysis pipeline is customizable during the final knowledge inference step. ehrapy provides statistical methods for group comparison and extensive support for survival analysis (Methods), enabling the discovery of biomarkers. Furthermore, ehrapy offers functions for causal inference to go from statistically determined associations to causal relations (Methods). Moreover, patient visits in aggregated EHR data can be regarded as snapshots where individual measurements taken at specific timepoints might not adequately reflect the underlying progression of disease and result from unrelated variation due to, for example, day-to-day differences54–56. Therefore, disease progression models should rely on analysis of the underlying clinical data, as disease progression in an individual patient may not be monotonous in time. ehrapy allows for the use of advanced trajectory inference methods to overcome sparse measurements57–59. We show that this approach can order snapshots to calculate a pseudotime that can adequately reflect the progression of the underlying clinical process. Given a sufficient number of snapshots, ehrapy increases the potential to understand disease progression, which is likely not robustly captured within a single EHR but, rather, across several.
+
+### Prior Work on Pneumonia Phenotyping: PIC study findings:
+
+@heumos2024 demonstrated the utility of the ehrapy framework by demonstrating capability to analyze heterogeneous datasets from a broad patient set across multiple care units, they applied the ehrapy exploratory strategy to the PIC43 database. The PIC database is a single-center database hosting information on children admitted to critical care units at the Children’s Hospital of Zhejiang University School of Medicine in China.
+
+It contains 13,499 distinct hospital admissions of 12,881 individual pediatric patients admitted between 2010 and 2018 for whom demographics, diagnoses, doctors’ notes, vital signs, laboratory and microbiology tests, medications, fluid balances and more were collected (Extended Data Figs. 1 and 2a and Methods). After missing data imputation and subsequent pre-processing (Extended Data Figs. 2b,c and 3 and Methods), we generated a uniform manifold approximation and projection (UMAP) embedding to visualize variation across all patients using ehrapy (Fig. 2a). This visualization of the low-dimensional patient manifold shows the heterogeneity of the collected data in the PIC database, with malformations, perinatal and respiratory being the most abundant International Classification of Diseases (ICD) chapters (Fig. 2b). The most common respiratory disease categories (Fig. 2c) were labeled pneumonia and influenza (n = 984).
+
+They focused on pneumonia to apply ehrapy to a challenging, broad-spectrum disease that affects all age groups. Pneumonia is a prevalent respiratory infection that poses a substantial burden on public health60 and is characterized by inflammation of the alveoli and distal airways60. Individuals with pre-existing chronic conditions are particularly vulnerable, as are children under the age of 5 (ref. 61). Pneumonia can be caused by a range of microorganisms, encompassing bacteria, respiratory viruses and fungi.influenza
+
+![](images/paste-2.png)
 
 # Methods
 
-## Data Source
+Our investigation was conducted in two phases, first we validated ehrapy's core functionality through replicating their prior work and then extended it to machine learning-based phenotyping [@heumos2024].
 
-The MIMIC-IV database provides an ideal test ground for this work, containing comprehensive clinical data from ICU and non-ICU patients at Beth Israel Deaconess Medical Center [3]. Its structured format and rich clinical information enable direct comparison with analyses performed on the original Pediatric Intensive Care (PIC) database [4], while its scope and complexity make it suitable for testing advanced machine learning implementations
+### MIMIC-IV
 
-### Framework Validation (Phase 1)
-Goal: Clearly describe your methodology so that others can replicate your study.
+All data utilized in this study were extracted from the MIMIC-IV database version 3.1, containing de-identified health data associated with approximately 50,000 hospital admissions for adult patients between 2008-2019 [@johnson2023]. The database includes detailed client and hospital level information including patient demographics, vital signs, laboratory measurements, medications, diagnoses, and procedures carried out in both the intensive care unit (ICU), the hospital and emergency department (ED). Credentialed access to MIMIC-IV was obtained through PhysioNet and all analyses was conducted in compliance with the database usage agreement [@johnson].
 
-Data Processing: Explain how you cleaned and preprocessed the data for pneumonia stratification.
-Clustering Approach: Describe the methods used (e.g., k-means, hierarchical clustering).
-Evaluation Metrics: How did you assess ehrapy’s stratification performance?
+Following the methodology @heumos2024 , we first set out to validate ehrapy's basic functionality for cohort identification and characterization by identifying and stratifying adult patients diagnosed with unspecified pneumonia into distinct phenotypic groups [@johnson]. To do this, we completed the following steps:
+
+-   Used ehrapy to prepare and preprocess data (see Fig)
+
+-   Use ehrapy's clustering capabilities to analyze laboratory values, vital signs, and medication patterns [@heumos2024]
+
+-   Identify clinically meaningful subgroups in adult pneumonia cases
+
+-   Compare findings with the original pediatric patient analysis to evaluate pattern consistency across age groups
+
+![](fig3_disease_types_all.png)
+
+![](fig3_pneumonia_subtype.png)
+
+![](fig3_respiratory_subtypes.png){width="534"}
+
+## Framework Validation via Patient Stratification
+
+-   After missing data imputation and subsequent preprocessing (See figures), we generated a uniform manifold approximation and projection (UMAP) embedding to visualize variation across all patients in our cohort using ehrapy.
+    -   Create UMAP of all patient visits in the ICU with primary discharge diagnosis grouped by ICD grouping. (See original paper and recreate graphs). This visualization of the low-dimensional patient manifold shows the heterogeneity of the collected data in the MIMIC-IV database, with \_\_\_\_\_\_\_\_\_\_, \_\_\_\_\_\_\_\_\_ and \_\_\_\_\_\_\_\_\_\_\_\_\_\_ being the most abundant ICD chapters.
+
+Clustering Approach: Describe the methods used (e.g., k-means, hierarchical clustering). Evaluation Metrics: How did you assess ehrapy’s stratification performance?
 
 ### Machine Learning Extension (Phase 2)
-Model Selection: Justify the use of RNNs for EHR phenotyping.
-Feature Engineering: Describe how you converted time-series EHR data into model-ready inputs.
-Training & Validation: How did you train/test the model? What hyperparameters were used?
-Performance Metrics: Describe how you evaluated the ML model (e.g., AUC, F1-score, silhouette scores for clustering).
+
+Model Selection: Justify the use of RNNs for EHR phenotyping. Feature Engineering: Describe how you converted time-series EHR data into model-ready inputs. Training & Validation: How did you train/test the model? What hyperparameters were used? Performance Metrics: Describe how you evaluated the ML model (e.g., AUC, F1-score, silhouette scores for clustering).
+
+## Sample Population
 
 # Results (3-4 pages)
+
+![](images/paste-1.png)
+
 Goal: Present key findings objectively, using figures and tables.
+
+![](data/visualizations/annotated_leiden_clusters.png) ![](data/visualizations/PAGA_clusters.png)
 
 ## Validation Results (Phase 1)
 
-Stratified pneumonia subgroups: Describe the clusters formed and compare them to the original pediatric study.
-Statistical differences: Highlight major differences/similarities across age groups.
-## ML Phenotyping Results (Phase 2)
+Stratified pneumonia subgroups: Describe the clusters formed and compare them to the original pediatric study. Statistical differences: Highlight major differences/similarities across age groups. \## ML Phenotyping Results (Phase 2)
 
-Performance Metrics: Report accuracy, AUC, or other key metrics of the RNN model.
-Comparison with Clustering Approach: How well did ML-based phenotyping align with ehrapy’s unsupervised stratification?
-Visualization: Include figures (e.g., t-SNE plots, confusion matrices).
-
-
-
-
+Performance Metrics: Report accuracy, AUC, or other key metrics of the RNN model. Comparison with Clustering Approach: How well did ML-based phenotyping align with ehrapy’s unsupervised stratification? Visualization: Include figures (e.g., t-SNE plots, confusion matrices).
 
 ```{python}
 
 ```
 
-
 ```{python}
 
 ```
+
+### Ehrapy framework
+
+The ehrapy framework was utilized to phenotype adult pneumonia patients using electronic health record (EHR) data. ehrapy provides a modular pipeline designed for standardized data pre-processing and analysis, facilitating reproducibility and collaboration among researchers. The modularity of the framework allows researchers to customize and extend functionality according to specific analytical needs.
+
+Data loading within ehrapy is streamlined through dedicated modules that store structured EHR data in AnnData objects, which support various matrix formats (dense, sparse, ragged) and incorporate comprehensive metadata annotations crucial for cohort tracking and contextual analysis [@virshup]. Cohort tracking functionality in ehrapy enables researchers to systematically follow patient cohorts over time, ensuring accurate longitudinal analyses and facilitating reliable phenotype characterization. For example, we can track all transformations applied to data, making it easier to revert to or visualize original, untransformed values even after extensive processing.
+
+This study will utilize the MIMIC-IV database, which contains de-identified health data associated with approximately 50,000 hospital admissions for adult patients between 2008-2019 [@johnson]. The database includes detailed information about patient demographics, vital signs, laboratory measurements, medications, diagnoses, and procedures. We have obtained credentialed access to MIMIC-IV through PhysioNet and will conduct all analyses in compliance with the database usage agreement [@johnson].
+
+![](images/paste-3.png)
