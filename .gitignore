@@ -5,3 +5,4 @@ scrap
 *.csv
 *summary*.txt
 mimiciv/*.*
+data/
