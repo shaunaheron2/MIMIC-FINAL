@@ -16,11 +16,11 @@ from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import HistGradientBoostingClassifier
-
+from xgboost import XGBClassifier
 from imblearn.over_sampling import RandomOverSampler
 from sklearn.metrics import classification_report
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + './../..')
-
+from xgboost import XGBClassifier
 importlib.reload(evaluation)
 import evaluation
 # MAX_LEN=12
@@ -101,14 +101,22 @@ class ML_models():
                     concat_cols.extend(cols_t)
             print('train_hids',len(train_hids))
             X_train,Y_train=self.getXY(train_hids,labels,concat_cols)
+
+            # Convert to string to avoid mixed type errors
+            X_train['gender'] = X_train['gender'].astype(str)
+            X_train['ethnicity'] = X_train['ethnicity'].astype(str)
+            X_train['insurance'] = X_train['insurance'].astype(str)
+
             #encoding categorical
             gen_encoder = LabelEncoder()
             eth_encoder = LabelEncoder()
             ins_encoder = LabelEncoder()
             age_encoder = LabelEncoder()
+
             gen_encoder.fit(X_train['gender'])
             eth_encoder.fit(X_train['ethnicity'])
             ins_encoder.fit(X_train['insurance'])
+
             #age_encoder.fit(X_train['Age'])
             X_train['gender']=gen_encoder.transform(X_train['gender'])
             X_train['ethnicity']=eth_encoder.transform(X_train['ethnicity'])
@@ -120,6 +128,11 @@ class ML_models():
             print('test_hids',len(test_hids))
             X_test,Y_test=self.getXY(test_hids,labels,concat_cols)
             self.test_data=X_test.copy(deep=True)
+
+            X_test['gender'] = X_test['gender'].astype(str)
+            X_test['ethnicity'] = X_test['ethnicity'].astype(str)
+            X_test['insurance'] = X_test['insurance'].astype(str)
+
             X_test['gender']=gen_encoder.transform(X_test['gender'])
             X_test['ethnicity']=eth_encoder.transform(X_test['ethnicity'])
             X_test['insurance']=ins_encoder.transform(X_test['insurance'])
@@ -165,7 +178,7 @@ class ML_models():
         elif self.model_type=='Xgboost':
             X_train=pd.get_dummies(X_train,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
             X_test=pd.get_dummies(X_test,prefix=['gender','ethnicity','insurance'],columns=['gender','ethnicity','insurance'])
-            model = xgb.XGBClassifier(objective="binary:logistic").fit(X_train, Y_train)
+            model = XGBClassifier(objective="binary:logistic").fit(X_train, Y_train)
             #logits=model.predict_log_proba(X_test)
             #print(self.test_data['ethnicity'])
             #print(self.test_data.shape)
