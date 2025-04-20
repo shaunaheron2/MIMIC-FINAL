@@ -6,3 +6,5 @@ scrap
 *summary*.txt
 mimiciv/*.*
 data/*.*
+notebooks/
+ehrapy_data/
